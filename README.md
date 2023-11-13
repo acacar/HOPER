@@ -1,95 +1,143 @@
-# Currently Under Improvment! We are diligently streamlining this repository for seamless automation!
 # HOPER (Holistic Protein Representation)
 
-<p align="center" width="100%">
-    <img width=" 65% " src="Figures/figure_.jpg">
-</p>
+**🚧️ Currently under construction! 🚧️**
+We are streamlining this repository for better automation! Please be patient with us.
 
+## Overview
 
+![[Figures/figure_.jpg]]
 
--Holistic protein representation uses  multimodal learning model to predict protein functions even with low-data. 
+- Holistic protein representation uses  multimodal learning model to predict protein functions even with low-data.
 
--Representation vectors created using protein sequence, protein text and protein-protein interaction data types to achieve this goal.
+- Representation vectors created using protein sequence, protein text and protein-protein interaction data types to achieve this goal.
 
--The rationale behind  incorporating protein-protein interactions into our holistic protein representation model is the assumption 
-that interacting proteins are likely to act in the same biological process. Also, these proteins are probably located at the same location in the cell. 
+- The rationale behind  incorporating protein-protein interactions into our holistic protein representation model is the assumption that interacting proteins are likely to act in the same biological process. Also, these proteins are probably located at the same location in the cell.
 
--Text-based protein representations calculated with pre-trained natural language processing models.
+- Text-based protein representations calculated with pre-trained natural language processing models.
 
--We aim to increase low-data prediction performance by using these three data types together.
+- We aim to increase low-data prediction performance by using these three data types together.
 
-# Installation Steps
+## Installation Prerequisites
+
+- You must have [Anaconda](https://www.anaconda.com/download) or [Miniconda](https://docs.conda.io/projects/miniconda/en/latest/miniconda-other-installer-links.html) installed on your system.
 
 ## HOPER Instalation Instructions
 
-* Clone HOPER repository
+1. Clone HOPER repository
 
+    ```shell
     git clone https://github.com/serbulent/HOPER.git
+    ```
+
+1. Change directory to HOPER
+
+    ```shell
+    cd HOPER
+    ```
+
+1. Create an environment variable to point to the HOPER directory
+
+    ```shell
+    export HOPER_BASE=$(pwd) 
+    ```
+
+   This variable will be used in the following steps.
+
+1. create the necessary environment with:
+
+      ```shell
+      sh create_env.sh
+      ```
+
+1. For the models to work, data, models files and uniprot_sprot.xml.gz files for uniprot preprocessing must be downloaded from the links below. The downloaded files should be placed in the HOPER folder in specific places. These will be indicated in the following steps. For now, you can download the files from the links below and place them in the HOPER folder
+
+    - [Data files](https://drive.google.com/drive/folders/1tZ6Q60tQVaabEqUoBIu3CBiDa92Od3Nn?usp=drive_link)
   
-* Run python creat_env.py
-
-* In order for the models to work, data, models files and uniprot_sprot.xml.gz files for uniprot preprocessing must be downloaded.Downloaded files are placed in the **HOPER** folder.
-
-    -Data files instalation: https://drive.google.com/drive/folders/1tZ6Q60tQVaabEqUoBIu3CBiDa92Od3Nn?usp=drive_link
+    - [Model files](https://drive.google.com/drive/folders/1s5L2tlLjBurVGfE7GfXLhdjFYnQEEXqs?usp=drive_link)
   
-    -Models files instalation: https://drive.google.com/drive/folders/1s5L2tlLjBurVGfE7GfXLhdjFYnQEEXqs?usp=drive_link
+    - [Uniprot preprocessing data](https://drive.google.com/file/d/1fOu7cWX9f-B-Ro41VvLGgG8eyGhV8IwD/view?usp=drive_link)
+
+## PPI Model Installation Instructions
+
+1. Install [GEM](https://github.com/palash1992/GEM) packages to use for Node2vec and HOPER in your ppi_representations directory, use:
+
+   - You need to use GEM commit `213189b` for full reproducibility. To do this, you can use the following commands:
   
-    -Uniprot preprocessing data instalation: https://drive.google.com/file/d/1fOu7cWX9f-B-Ro41VvLGgG8eyGhV8IwD/view?usp=drive_link
+        ```shell
+        cd $HOPER_BASE/ppi_representations
+        git clone https://github.com/palash1992/GEM.git GEM 
+        cd GEM   
+        git checkout 213189b
+        cd $HOPER_BASE/ppi_representations
+        ```
 
-## PPI Model Instalation Instructions
-* To install packages to use for Node2vec and HOPE in your ppi_representations directory, use:
+   - Build Node2vec:
+     - Clone the repository:
 
-  * GEM version 213189b; use for old version:
+        ```shell
+        git clone https://github.com/snap-stanford/snap $HOPER_BASE/ppi_representations/snap
+        ```
+
+   - Compile SNAP. This is done as follows:
   
-    git clone [https://github.com/palash1992/GEM.git]
-    
-    git checkout  [213189b]
+        ```shell
+        cd snap/
+        rm -rf examples/Release
+        make all
+        cd examples/node2vec
+        chmod +x node2vec
+        ```
 
-* To make Node2vec executable; Clone repository git clone https://github.com/snap-stanford/snap and Compiles SNAP. The code for compiles is as below:
-  
-  - cd snap/
-  - rm -rf examples/Release
-  - make all
-  - cd examples/node2vec
-  - chmod +x node2vec
-  - ls -alh node2vec
+- Make `node2vec` executable and add to your *path* or move it to the location you run. ==<-- FIXME: according to final directory layout==
 
-* Make node2vec executable and add to system PATH or move it to the location you run.
-
-* You can make protein names using edgelist_code.py These names will be needed later for the node2vec.py and HOPE.py files. Do not forget the location information.
-
-
+  - You can make protein names using edgelist_code.py.
+  - These names will be needed later for the `node2vec.py` and `HOPE.py` files. Do not forget the location information. ==<- FIXME: We can't have the user remembering stuff for us!!==
 
 ## Text Model Installation Instructions
 
-* To use text representation generator, copy uniprot and pubmed text files to HOPER/text_representations/representation_generation/data/ in separate folders named as uniprot and pubmed.
-  
-* biosentvec and biowordvec models must be downloaded to HOPER/text_representations/representation_generation/models from the urls given below. Alternatively model_download parameter must be set as "y" to download models automatically if biosentvec or biowordvec representations selected to be generated.
+- Move the `uniprot` and `pubmed` directories you downloaded before from Google Drive to:
 
-https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin
-https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioWordVec_PubMed_MIMICIII_d200.bin
+    ```shell
+    $HOPER_BASE/text_representations/representation_generation/data/
+    ```
 
-  
-# How to run HOPER
+- biosentvec and biowordvec models must be downloaded to `$HOPER_BASE/text_representations/representation_generation/models` You can set the ==`model_download` parameter in `$HOPER_BASE/Hoper_representation_generetor.yaml` to "y" to download models automatically if the biosentvec or biowordvec representations are selected for generation. Alternatively, you can download them beforehand:
+
+  - To download BioSentVec:
+
+    ```shell
+    cd $HOPER_BASE/text_representations/representation_generation/models
+    curl https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioSentVec_PubMed_MIMICIII-bigram_d700.bin > BioSentVec_PubMed_MIMICIII-bigram_d700.bin
+    ```
+
+  - To download BioWordVec:
+
+    ```shell
+    cd $HOPER_BASE/text_representations/representation_generation/models
+    curl https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/BioSentVec/BioWordVec_PubMed_MIMICIII_d200.bin > BioWordVec_PubMed_MIMICIII_d200.bin
+    ```
+
+## How to run HOPER
 
 Run module main function after editing  the configuration file Hoper.yaml as below examples as;
 
-```
-python Hoper_representation_generetor_main.py 
+```shell
+python3 Hoper_representation_generetor_main.py 
 ```
 
-* Run HOPER to produce Text Representation Preprocessing [readme.md](https://github.com/serbulent/HOPER/tree/main/text_representations/preprocess)
+- Run HOPER to produce Text Representation Preprocessing [readme.md](https://github.com/serbulent/HOPER/tree/main/text_representations/preprocess)
   
-```
+```text
   choice_of_module: [Preprocessing] # Module selection PPI,Preprocessing,SimpleAe
  #********************Preprocessing Module********************************
     module_name: Preprocessing
     uniprot_dir: ./uniprot_sprot.xml.gz 
 ```
-* Run HOPER to produce text representation example for more information please read
+
+- Run HOPER to produce text representation example for more information please read
 [readme.md](https://github.com/serbulent/HOPER/blob/main/text_representations/representation_generation/README.md)
 
-```
+```yaml
  parameters:
      module_name: text
     choice_of_process:  [generate,visualize]
@@ -103,11 +151,10 @@ python Hoper_representation_generetor_main.py
         result_files_path:  [./data/text_representations/result_visualization/result_files/results/]
 ```
 
-* Run HOPER to produce PPI representation example for more information please read
+- Run HOPER to produce PPI representation example for more information please read
 [readme.md](https://github.com/serbulent/HOPER/blob/main/ppi_representations/readme.md)
 
-```
-
+```yaml
 parameters:
     choice_of_module: [PPI] # Module selection PPI,Preprocessing,case_study
     #*************************************MODULES********************************************************************
@@ -127,32 +174,30 @@ parameters:
             beta:  [0.00390625]
 ```
 
-* Run HOPER to produce SimpleAE example
+- Run HOPER to produce SimpleAE example
   
-```
-
+```yaml
 parameters:
     choice_of_module: [SimpleAe] # Module selection PPI,Preprocessing,SimpleAe
 #*******************SimpleAe*********************************************
     module_name: SimpleAe #Protein sequence based protein representation 
     representation_path: ./case_study/case_study_results/modal_rep_ae_node2vec_binary_fused_representations_dataframe_multi_col.csv
-
 ```
 
-  
-* Run HOPER to produce MultiModalAE example
+- Run HOPER to produce MultiModalAE example
 
-* Run HOPER to produce TransferAE example
+- Run HOPER to produce TransferAE example
 
-*Reproducible run of paper
+## Reproducible run of paper
 
-```
+```shell
 python case_study_main.py
 ```
-* Run case_study_main.py for making immun escape prediction for more information please read
+
+- Run case_study_main.py for making immun escape prediction for more information please read
 [readme.md](https://github.com/serbulent/HOPER/blob/main/case_study/readme.md)
 
-```
+```yaml
 parameters:
     choice_of_module: [case_study] 
     #********************case_study Module********************************
